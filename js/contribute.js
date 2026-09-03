@@ -9,8 +9,8 @@
  * Saves to Firestore `donations` collection with status "PENDING"
  */
 
-import { buildBackground } from './bg-builder.js';
-import { initParticles, injectParticleStyles } from './particles.js';
+import { buildBackground } from './bg-builder.js?v=2';
+import { initParticles, injectParticleStyles } from './particles.js?v=2';
 
 // Contribution data collected in step 1
 let contributionData = {};
@@ -146,7 +146,7 @@ async function loadQRCode() {
     const placeholder = document.getElementById('qr-placeholder');
 
     try {
-        const { db } = await import('./firebase-config.js');
+        const { db } = await import('./firebase-config.js?v=2');
         const { doc, getDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
         const settingsRef = doc(db, 'event', 'settings');
@@ -170,7 +170,7 @@ async function submitContribution(transactionId) {
     submitBtn.textContent = 'Submitting…';
 
     try {
-        const { db } = await import('./firebase-config.js');
+        const { db } = await import('./firebase-config.js?v=2');
         const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
         await addDoc(collection(db, 'donations'), {

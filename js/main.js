@@ -9,10 +9,10 @@
  * 5. Initialize lightbox
  */
 
-import { initParticles, injectParticleStyles } from './particles.js';
-import { initScrollAnimations, revealHeroContent } from './scroll.js';
-import { initLightbox } from './lightbox.js';
-import { buildBackground } from './bg-builder.js';
+import { initParticles, injectParticleStyles } from './particles.js?v=2';
+import { initScrollAnimations, revealHeroContent } from './scroll.js?v=2';
+import { initLightbox } from './lightbox.js?v=2';
+import { buildBackground } from './bg-builder.js?v=2';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Build the background layers
@@ -95,7 +95,7 @@ function initNavigation() {
  */
 async function loadDynamicContent() {
     try {
-        const { db } = await import('./firebase-config.js');
+        const { db } = await import('./firebase-config.js?v=2');
         const { collection, getDocs, orderBy, query, serverTimestamp } =
             await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 

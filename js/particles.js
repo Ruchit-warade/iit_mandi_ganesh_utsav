@@ -7,7 +7,7 @@
  * Uses CSS animations for performance (no JS animation loop).
  */
 
-import { PARTICLE_CONFIG } from './ganpati-svg.js';
+import { PARTICLE_CONFIG } from './ganpati-svg.js?v=2';
 
 /**
  * Generate floating particles inside the SVG

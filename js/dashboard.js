@@ -11,7 +11,7 @@
  *  - Event settings (title, tagline, QR code)
  */
 
-import { hashPin, makeOrganiserEmail } from './auth.js';
+import { hashPin, makeOrganiserEmail } from './auth.js?v=2';
 
 // Firebase refs (set after auth)
 let db, collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc,
@@ -35,7 +35,7 @@ async function loadFirebase() {
     const firestore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
     const fbStorage = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js');
     const fbAuth = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
-    const config = await import('./firebase-config.js');
+    const config = await import('./firebase-config.js?v=2');
 
     db = config.db;
     storage = config.storage;

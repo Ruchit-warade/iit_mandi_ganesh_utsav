@@ -9,7 +9,7 @@
  * because the URL bar and keyboard fire resize events).
  */
 
-import { MOUNTAIN_PATHS } from './ganpati-svg.js';
+import { MOUNTAIN_PATHS } from './ganpati-svg.js?v=2';
 
 /**
  * Build the fixed background into the given SVG element

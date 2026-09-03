@@ -2,9 +2,9 @@
  * Dashboard Login — Two-Stage Authentication
  */
 
-import { buildBackground } from './bg-builder.js';
-import { initParticles, injectParticleStyles } from './particles.js';
-import { verifyOrganiserIdentity, signInOrganiser } from './auth.js';
+import { buildBackground } from './bg-builder.js?v=2';
+import { initParticles, injectParticleStyles } from './particles.js?v=2';
+import { verifyOrganiserIdentity, signInOrganiser } from './auth.js?v=2';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Background
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initAuthCheck() {
     try {
-        const { auth } = await import('./firebase-config.js');
+        const { auth } = await import('./firebase-config.js?v=2');
         const { onAuthStateChanged } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
 
         onAuthStateChanged(auth, (user) => {
@@ -56,7 +56,7 @@ async function initLogin() {
         btn.classList.add('loading');
 
         try {
-            const { db } = await import('./firebase-config.js');
+            const { db } = await import('./firebase-config.js?v=2');
             const { collection, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
             const organiser = await verifyOrganiserIdentity(db, collection, where, getDocs, name, pin);
@@ -97,7 +97,7 @@ async function initLogin() {
         btn.classList.add('loading');
 
         try {
-            const { auth } = await import('./firebase-config.js');
+            const { auth } = await import('./firebase-config.js?v=2');
             const { signInWithEmailAndPassword } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
 
             await signInOrganiser(auth, signInWithEmailAndPassword, currentOrganiser, password);
