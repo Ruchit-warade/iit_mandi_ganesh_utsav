@@ -16,7 +16,6 @@ import { hashPin, makeOrganiserEmail } from './auth.js?v=3';
 // Firebase refs (set after auth)
 let db, collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc,
     serverTimestamp, where, getDocs, getDoc;
-let storage, ref, uploadBytes, getDownloadURL, deleteObject;
 let auth, signInWithEmailAndPassword, createUserWithEmailAndPassword;
 
 // Current filter
@@ -33,17 +32,14 @@ async function init() {
 
 async function loadFirebase() {
     const firestore = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-    const fbStorage = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js');
     const fbAuth = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js');
     const config = await import('./firebase-config.js?v=2');
 
     db = config.db;
-    storage = config.storage;
     auth = config.auth;
 
     ({ collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc,
        serverTimestamp, where, getDocs, getDoc } = firestore);
-    ({ ref, uploadBytes, getDownloadURL, deleteObject } = fbStorage);
     ({ signInWithEmailAndPassword, createUserWithEmailAndPassword } = fbAuth);
 }
 
@@ -402,7 +398,7 @@ function loadGallery() {
         renderGallery();
     });
 
-    setupGalleryUpload();
+    setupGalleryAdd();
 }
 
 function renderGallery() {
@@ -440,67 +436,39 @@ window.editGalleryCaption = async (id) => {
     await updateDoc(doc(db, 'gallery', id), { caption: next.trim() });
 };
 
-function setupGalleryUpload() {
-    const input = document.getElementById('photo-input');
-    const btn = document.getElementById('upload-photo-btn');
-
-    btn.addEventListener('click', () => input.click());
-    input.addEventListener('change', () => {
-        const files = Array.from(input.files);
-        if (files.length === 0) return;
-        uploadGalleryFiles(files);
-        input.value = '';
-    });
-}
-
-async function uploadGalleryFiles(files) {
-    const progress = document.getElementById('upload-progress');
-    const bar = document.getElementById('upload-bar');
-    const status = document.getElementById('upload-status');
-    const errorEl = document.getElementById('upload-error');
+function setupGalleryAdd() {
+    const btn = document.getElementById('add-photo-btn');
+    const pathInput = document.getElementById('photo-path');
     const captionInput = document.getElementById('photo-caption');
-    const caption = captionInput ? captionInput.value.trim() : '';
-    progress.hidden = false;
-    if (errorEl) errorEl.hidden = true;
 
-    let uploaded = 0;
-    let failed = 0;
-    const total = files.length;
+    btn.addEventListener('click', async () => {
+        const path = pathInput ? pathInput.value.trim() : '';
+        const caption = captionInput ? captionInput.value.trim() : '';
+        const errorEl = document.getElementById('add-photo-error');
 
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+        if (!path) {
+            if (errorEl) { errorEl.textContent = 'Enter the image path first (e.g. assets/images/gallery/aarti.jpg).'; errorEl.hidden = false; }
+            return;
+        }
+        if (errorEl) errorEl.hidden = true;
+
         try {
-            const filename = `gallery/${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const fileRef = ref(storage, filename);
-            await uploadBytes(fileRef, file);
-            const url = await getDownloadURL(fileRef);
-
-            // Use the caption field; number it if uploading multiple
-            const base = file.name.replace(/\.[^.]+$/, '');
-            const cap = files.length === 1 ? (caption || base) : (caption ? `${caption} ${i + 1}` : base);
-
             // Compute next order
             const nextOrder = galleryDocs.length ? Math.max(...galleryDocs.map(d => d.order || 0)) + 1 : 0;
             await addDoc(collection(db, 'gallery'), {
-                url,
-                caption: cap,
+                url: path,
+                caption: caption || path.split('/').pop().replace(/\.[^.]+$/, ''),
                 order: nextOrder,
                 createdAt: serverTimestamp(),
             });
 
-            uploaded++;
+            if (pathInput) pathInput.value = '';
+            if (captionInput) captionInput.value = '';
         } catch (e) {
-            console.error('Upload error:', e);
-            failed++;
+            console.error('Add photo error:', e);
+            if (errorEl) { errorEl.textContent = 'Could not save the photo. Check your connection and try again.'; errorEl.hidden = false; }
         }
-        bar.style.width = `${((uploaded + failed) / total) * 100}%`;
-        status.textContent = `Uploading… ${uploaded + failed}/${total}`;
-    }
-
-    if (captionInput) captionInput.value = '';
-    if (failed > 0 && errorEl) errorEl.hidden = false;
-
-    setTimeout(() => { progress.hidden = true; bar.style.width = '0%'; }, 1500);
+    });
 }
 
 window.moveGallery = async (id, dir) => {
@@ -518,19 +486,7 @@ window.moveGallery = async (id, dir) => {
 };
 
 window.deleteGallery = async (id) => {
-    if (!confirm('Delete this gallery image?')) return;
-    const item = galleryDocs.find(d => d.id === id);
-
-    try {
-        // Try to delete from storage (best effort)
-        const path = item.url.split('/o/')[1]?.split('?')[0];
-        if (path) {
-            const decoded = decodeURIComponent(path);
-            const fileRef = ref(storage, decoded);
-            await deleteObject(fileRef);
-        }
-    } catch (e) { /* ignore storage errors */ }
-
+    if (!confirm('Remove this gallery image? The file stays in the repo — only the entry is removed.')) return;
     await deleteDoc(doc(db, 'gallery', id));
 };
 
@@ -611,20 +567,13 @@ async function saveMember(e) {
     const email = document.getElementById('member-email').value.trim();
     const pin = document.getElementById('member-pin').value;
     const password = document.getElementById('member-password').value;
-    const photoFile = document.getElementById('member-photo').files[0];
+    const photoPath = document.getElementById('member-photo').value.trim();
 
     const saveBtn = document.getElementById('member-save');
     saveBtn.classList.add('loading');
 
     try {
-        let photoUrl = null;
-        if (photoFile) {
-            const filename = `organisers/${Date.now()}_${photoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const fileRef = ref(storage, filename);
-            await uploadBytes(fileRef, photoFile);
-            photoUrl = await getDownloadURL(fileRef);
-        }
-
+        const photoUrl = photoPath || null;
         const pinHash = await hashPin(pin);
 
         if (editingMemberId) {
@@ -676,19 +625,12 @@ window.editMember = async (id) => {
     document.getElementById('member-email').value = member.email || '';
     document.getElementById('member-pin').value = '';
     document.getElementById('member-password').value = '';
-    document.getElementById('member-photo').value = '';
+    document.getElementById('member-photo').value = member.photoUrl || '';
     document.getElementById('member-modal-overlay').hidden = false;
 };
 
 window.deleteMember = async (id) => {
     if (!confirm('Delete this organiser?')) return;
-    const member = teamDocs.find(d => d.id === id);
-    if (member?.photoUrl) {
-        try {
-            const path = member.photoUrl.split('/o/')[1]?.split('?')[0];
-            if (path) await deleteObject(ref(storage, decodeURIComponent(path)));
-        } catch (e) {}
-    }
     await deleteDoc(doc(db, 'organisers', id));
 };
 
@@ -720,27 +662,16 @@ function loadSettings() {
         }
     });
 
-    // QR upload
+    // QR code by path (file lives in the repo)
     document.getElementById('set-qr').addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        uploadQRCode(file);
+        const path = e.target.value.trim();
+        if (!path) return;
+        const preview = document.getElementById('qr-preview');
+        preview.src = path;
+        preview.style.display = 'block';
     });
 
     document.getElementById('settings-form').addEventListener('submit', saveSettings);
-}
-
-async function uploadQRCode(file) {
-    const filename = `payment/${Date.now()}_qr.png`;
-    const fileRef = ref(storage, filename);
-    await uploadBytes(fileRef, file);
-    const url = await getDownloadURL(fileRef);
-
-    const preview = document.getElementById('qr-preview');
-    preview.src = url;
-    preview.style.display = 'block';
-
-    await updateDoc(doc(db, 'event', 'settings'), { qrCodeUrl: url });
 }
 
 async function saveSettings(e) {
@@ -748,6 +679,7 @@ async function saveSettings(e) {
     const btn = document.getElementById('save-settings-btn');
     btn.classList.add('loading');
 
+    const qrPath = document.getElementById('set-qr').value.trim();
     const data = {
         title: document.getElementById('set-title').value.trim(),
         tagline: document.getElementById('set-tagline').value.trim(),
@@ -755,6 +687,7 @@ async function saveSettings(e) {
         contributionInfo: document.getElementById('set-contribution-info').value.trim(),
         updatedAt: serverTimestamp(),
     };
+    if (qrPath) data.qrCodeUrl = qrPath;
 
     try {
         await updateDoc(doc(db, 'event', 'settings'), data);

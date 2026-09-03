@@ -64,12 +64,15 @@ event/settings
   contributionInfo: string
 ```
 
-### Storage
+### Repo assets (no Firebase Storage)
+Photos and the QR code live in the repo and are served from GitHub, so the
+dashboard doesn't need Firebase Storage. Place files here, commit & push,
+then reference them by path in the dashboard.
+
 ```
-gallery/     — event photos
-organisers/  — team member photos
-payment/     — QR code
-decorative/  — decorative assets
+assets/images/gallery/     — event photos
+assets/images/organisers/  — team member photos
+assets/images/payment/     — QR code
 ```
 
 ## Security

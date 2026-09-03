@@ -157,21 +157,19 @@
             <div id="tab-gallery" class="tab-panel">
                 <div class="tab-header">
                     <h2>Gallery</h2>
-                    <div class="gallery-upload-bar">
-                        <input type="text" id="photo-caption" class="caption-input" placeholder="Short description (e.g. Evening Aarti)" maxlength="120">
-                        <button class="btn btn-primary" id="upload-photo-btn">Upload Photo</button>
-                    </div>
                 </div>
-                <input type="file" id="photo-input" accept="image/*" multiple hidden>
-                <div id="upload-progress" hidden>
-                    <p id="upload-status" style="color: var(--text-muted); margin-bottom: var(--space-sm);">Uploading…</p>
-                    <div style="height:6px; background: var(--dark-border); border-radius: var(--radius-full); overflow:hidden;">
-                        <div id="upload-bar" style="height:100%; width:0%; background: var(--gold); transition: width 0.2s;"></div>
-                    </div>
+                <div class="gallery-upload-bar">
+                    <input type="text" id="photo-path" class="caption-input" placeholder="Image path — e.g. assets/images/gallery/aarti.jpg" >
+                    <input type="text" id="photo-caption" class="caption-input" placeholder="Short description (e.g. Evening Aarti)" maxlength="120">
+                    <button class="btn btn-primary" id="add-photo-btn">Add Photo</button>
                 </div>
-                <div id="upload-error" class="upload-error" hidden>Upload failed. Check Firebase Storage rules and try again.</div>
-                <div class="dashboard-gallery-grid" id="dashboard-gallery-grid"></div>
-                <div class="empty-state" id="gallery-empty" hidden>No gallery images yet. Upload your first photo.</div>
+                <p class="text-small" style="margin-top: var(--space-xs);">
+                    Put the image file in <code>assets/images/gallery/</code>, commit &amp; push to GitHub,
+                    then enter its path above.
+                </p>
+                <div id="add-photo-error" class="upload-error" hidden></div>
+                <div class="dashboard-gallery-grid" id="dashboard-gallery-grid" style="margin-top: var(--space-md);"></div>
+                <div class="empty-state" id="gallery-empty" hidden>No gallery images yet. Add your first photo above.</div>
             </div>
 
             <!-- TEAM -->
@@ -204,10 +202,10 @@
                             <textarea id="set-description" rows="4" placeholder="Event description"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="set-qr">Payment QR Code</label>
-                            <input type="file" id="set-qr" accept="image/*">
+                            <label for="set-qr">Payment QR Code path</label>
+                            <input type="text" id="set-qr" placeholder="assets/images/payment/qr.png">
                             <img id="qr-preview" class="qr-preview" alt="QR preview" style="display:none;">
-                            <p class="text-small" style="margin-top: var(--space-xs);">Shown on the contribution page for payment.</p>
+                            <p class="text-small" style="margin-top: var(--space-xs);">Path to the QR image in the repo, shown on the contribution page.</p>
                         </div>
                         <div class="form-group">
                             <label for="set-contribution-info">Contribution Info</label>
@@ -246,8 +244,9 @@
                     <input type="password" id="member-password" placeholder="Set a password" required>
                 </div>
                 <div class="form-group">
-                    <label for="member-photo">Photo</label>
-                    <input type="file" id="member-photo" accept="image/*">
+                    <label for="member-photo">Photo path</label>
+                    <input type="text" id="member-photo" placeholder="assets/images/organisers/name.jpg">
+                    <p class="text-small" style="margin-top: var(--space-xs);">Path to the member's photo in the repo. Leave blank to show initials.</p>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-outline" id="member-cancel">Cancel</button>
@@ -257,6 +256,6 @@
         </div>
     </div>
 
-    <script type="module" src="js/dashboard.js?v=5"></script>
+    <script type="module" src="js/dashboard.js?v=6"></script>
 </body>
 </html>
