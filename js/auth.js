@@ -46,6 +46,7 @@ export function makeOrganiserEmail(displayName) {
  */
 export async function verifyOrganiserIdentity(db, collection, where, getDocs, name, pin) {
     const pinHash = await hashPin(pin);
+    console.log('[Auth] Looking up:', { name, pinHash });
 
     try {
         const q = collection(db, 'organisers')
@@ -53,12 +54,15 @@ export async function verifyOrganiserIdentity(db, collection, where, getDocs, na
             .where('pinHash', '==', pinHash);
         const snapshot = await getDocs(q);
 
+        console.log('[Auth] Query results:', snapshot.size, 'docs found');
+        snapshot.forEach(doc => console.log('[Auth] Doc:', doc.id, doc.data()));
+
         if (snapshot.empty) return null;
 
         const doc = snapshot.docs[0];
         return { id: doc.id, data: doc.data() };
     } catch (e) {
-        console.error('Organiser lookup error:', e);
+        console.error('[Auth] Lookup error:', e);
         return null;
     }
 }

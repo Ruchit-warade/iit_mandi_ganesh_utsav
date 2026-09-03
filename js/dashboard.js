@@ -11,7 +11,7 @@
  *  - Event settings (title, tagline, QR code)
  */
 
-import { hashPin, makeOrganiserEmail } from './auth.js?v=2';
+import { hashPin, makeOrganiserEmail } from './auth.js?v=3';
 
 // Firebase refs (set after auth)
 let db, collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc,

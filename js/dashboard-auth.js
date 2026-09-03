@@ -4,7 +4,7 @@
 
 import { buildBackground } from './bg-builder.js?v=2';
 import { initParticles, injectParticleStyles } from './particles.js?v=2';
-import { verifyOrganiserIdentity, signInOrganiser } from './auth.js?v=2';
+import { verifyOrganiserIdentity, signInOrganiser } from './auth.js?v=3';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Background
