@@ -779,6 +779,12 @@
     padding: var(--space-md);
 }
 
+/* Ensure the hidden attribute actually hides the modal
+   (display:flex above would otherwise override it) */
+.modal-overlay[hidden] {
+    display: none;
+}
+
 .modal {
     background: var(--dark-surface);
     border: 1px solid var(--gold);
