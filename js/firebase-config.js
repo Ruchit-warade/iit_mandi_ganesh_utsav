@@ -8,13 +8,14 @@ import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-aut
 import { getStorage } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBsZe5SWASl9vuBNV3W3WlTHpw5w6HL4qs",
+  authDomain: "ganeshutsavdonation.firebaseapp.com",
+  projectId: "ganeshutsavdonation",
+  storageBucket: "ganeshutsavdonation.firebasestorage.app",
+  messagingSenderId: "131944288366",
+  appId: "1:131944288366:web:1c6d75679b5538832ed67f"
 };
+
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
