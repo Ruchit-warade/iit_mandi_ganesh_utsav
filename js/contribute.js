@@ -10,7 +10,6 @@
  */
 
 import { buildBackground } from './bg-builder.js';
-import { initVideoGanpati } from './video-ganpati.js';
 import { initParticles, injectParticleStyles } from './particles.js';
 
 // Contribution data collected in step 1
@@ -22,15 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     injectParticleStyles();
     initParticles();
 
-    // Run Ganpati video animation
-    initVideoGanpati(() => {
-        document.body.classList.remove('loading');
-    });
-
-    // Fallback: ensure content shows even if video takes long
-    setTimeout(() => {
-        document.body.classList.remove('loading');
-    }, 2000);
+    document.body.classList.remove('loading');
 
     initForm();
 });

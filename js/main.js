@@ -9,7 +9,6 @@
  * 5. Initialize lightbox
  */
 
-import { initVideoGanpati } from './video-ganpati.js';
 import { initParticles, injectParticleStyles } from './particles.js';
 import { initScrollAnimations, revealHeroContent } from './scroll.js';
 import { initLightbox } from './lightbox.js';
@@ -22,14 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inject particle CSS animations
     injectParticleStyles();
 
-    // Start Ganpati video animation
-    initVideoGanpati(() => {
-        // Video ready — reveal hero content
-        revealHeroContent();
-
-        // Remove loading state
-        document.body.classList.remove('loading');
-    });
+    // Reveal content immediately (no Ganpati animation)
+    revealHeroContent();
+    document.body.classList.remove('loading');
 
     // Initialize particles
     initParticles();

@@ -3,7 +3,6 @@
  */
 
 import { buildBackground } from './bg-builder.js';
-import { initVideoGanpati } from './video-ganpati.js';
 import { initParticles, injectParticleStyles } from './particles.js';
 import { verifyOrganiserIdentity, signInOrganiser } from './auth.js';
 
@@ -12,8 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buildBackground(document.getElementById('bg-canvas'));
     injectParticleStyles();
     initParticles();
-    initVideoGanpati(() => document.body.classList.remove('loading'));
-    setTimeout(() => document.body.classList.remove('loading'), 2000);
+    document.body.classList.remove('loading');
 
     // If already signed in, redirect to dashboard
     initAuthCheck();

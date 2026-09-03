@@ -57,18 +57,6 @@
     display: block;
 }
 
-/* Scale SVG to fill viewport while maintaining aspect ratio */
-#bg-canvas .ganpati-group {
-    /* Centered in viewport — slightly above center for hero text */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -52%);
-    width: min(45vw, 380px);
-    height: auto;
-    opacity: 0.45;
-}
-
 /* --- Mountain Layers --- */
 .mountain-layer {
     position: absolute;
@@ -87,39 +75,6 @@
 /* --- Particles Container --- */
 #particle-paths {
     pointer-events: none;
-}
-
-/* --- Video Ganpati --- */
-#ganpati-video {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -52%);
-    height: min(74vh, 620px);
-    width: auto;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 1.2s ease-out;
-}
-
-/* Hide SVG Ganpati paths (video replaces them) */
-#ganpati-paths {
-    display: none;
-}
-
-/* --- SVG Drawing Animation States (legacy — hidden) --- */
-#ganpati-paths path {
-    fill: none;
-    stroke: var(--gold);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    will-change: stroke-dashoffset;
-}
-
-/* Subtle gold glow on completed drawing */
-#ganpati-paths.glow-active {
-    filter: url(#gold-glow);
 }
 
 /* --- Loading State --- */
@@ -151,29 +106,11 @@ body.loading #bg-layer {
         height: 300px;
         top: 35%;
     }
-
-    .ganpati-group {
-        width: min(65vw, 280px) !important;
-        opacity: 0.35;
-    }
-
-    #ganpati-video {
-        height: min(68vh, 460px);
-    }
 }
 
 @media (max-width: 480px) {
-    .ganpati-group {
-        width: min(75vw, 240px) !important;
-        opacity: 0.3;
-    }
-
     #bg-layer::before {
         width: 250px;
         height: 250px;
-    }
-
-    #ganpati-video {
-        height: min(62vh, 400px);
     }
 }

@@ -1,8 +1,8 @@
 # IIT Mandi Ganesh Utsav — Ganpati in the Mountains
 
 A premium, minimalistic, cinematic website for IIT Mandi's biggest flagship festival.
-Golden Ganpati line-art drawing animation over Himalayan mountain silhouettes,
-with a fixed background and scrolling foreground content.
+Himalayan mountain silhouettes and floating particles over a dark gradient
+background, with a fixed backdrop and scrolling foreground content.
 
 ## Pages
 
@@ -82,9 +82,7 @@ decorative/  — decorative assets
 
 ## Signature Features
 
-- **Draw-once animation**: the golden Ganpati appears to be hand-drawn via
-  SVG `stroke-dasharray`/`stroke-dashoffset`, then stays complete (no looping)
-- **Fixed background**: mountains + Ganpati stay static; only foreground scrolls
+- **Fixed background**: mountains + particles stay static; only foreground scrolls
 - **Scroll reveals**: IntersectionObserver-driven fade/translate/blur transitions
 - **Responsive**: mobile-first, adaptive Ganpati sizing, touch-friendly
 
