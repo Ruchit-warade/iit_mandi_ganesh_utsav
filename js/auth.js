@@ -44,14 +44,14 @@ export function makeOrganiserEmail(displayName) {
  * @param {string} pin
  * @returns {Promise<{id: string, data: object} | null>}
  */
-export async function verifyOrganiserIdentity(db, collection, where, getDocs, name, pin) {
+export async function verifyOrganiserIdentity(db, collection, queryFn, where, getDocs, name, pin) {
     const pinHash = await hashPin(pin);
     console.log('[Auth] Looking up:', { name, pinHash });
 
     try {
-        const q = collection(db, 'organisers')
-            .where('displayName', '==', name)
-            .where('pinHash', '==', pinHash);
+        const q = queryFn(collection(db, 'organisers'),
+            where('displayName', '==', name),
+            where('pinHash', '==', pinHash));
         const snapshot = await getDocs(q);
 
         console.log('[Auth] Query results:', snapshot.size, 'docs found');

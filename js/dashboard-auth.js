@@ -4,7 +4,7 @@
 
 import { buildBackground } from './bg-builder.js?v=2';
 import { initParticles, injectParticleStyles } from './particles.js?v=2';
-import { verifyOrganiserIdentity, signInOrganiser } from './auth.js?v=3';
+import { verifyOrganiserIdentity, signInOrganiser } from './auth.js?v=4';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Background
@@ -57,9 +57,9 @@ async function initLogin() {
 
         try {
             const { db } = await import('./firebase-config.js?v=2');
-            const { collection, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+            const { collection, query, where, getDocs } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
-            const organiser = await verifyOrganiserIdentity(db, collection, where, getDocs, name, pin);
+            const organiser = await verifyOrganiserIdentity(db, collection, query, where, getDocs, name, pin);
 
             if (!organiser) {
                 btn.classList.remove('loading');
