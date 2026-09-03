@@ -234,6 +234,18 @@
     color: var(--cream);
 }
 
+.tab-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.btn-sm {
+    padding: 0.5rem 1.2rem;
+    font-size: var(--text-xs);
+}
+
 /* --- Stat Cards --- */
 .stats-grid {
     display: grid;
@@ -890,5 +902,42 @@
     .stats-grid {
         grid-template-columns: 1fr 1fr;
         gap: var(--space-sm);
+    }
+}
+
+/* --- Desktop compaction ---
+   The fluid design tokens scale with viewport width, which makes the
+   dashboard look overly large on laptops. Cap sizes on larger screens. */
+@media (min-width: 1025px) {
+    .dashboard-main {
+        padding: clamp(1.5rem, 3vw, 3rem);
+    }
+
+    .tab-header h2 {
+        font-size: clamp(1.4rem, 2vw, 1.8rem);
+    }
+
+    .kpi-value {
+        font-size: clamp(1.4rem, 1.8vw, 1.7rem);
+    }
+
+    .kpi-main .kpi-value {
+        font-size: clamp(2rem, 3vw, 2.5rem);
+    }
+
+    .kpi-hero {
+        gap: var(--space-md);
+    }
+
+    .chart-box {
+        height: 240px;
+    }
+
+    .chart-title {
+        font-size: var(--text-sm);
+    }
+
+    .tab-header-actions {
+        gap: var(--space-xs);
     }
 }

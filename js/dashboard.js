@@ -117,6 +117,41 @@ function setupTabs() {
             renderContributions();
         });
     });
+
+    // Export CSV
+    const exportBtn = document.getElementById('export-csv-btn');
+    if (exportBtn) exportBtn.addEventListener('click', exportCSV);
+}
+
+/* ============ CSV EXPORT ============ */
+function exportCSV() {
+    const headers = ['Name', 'Category', 'Roll', 'Amount (₹)', 'Transaction ID', 'Date', 'Status'];
+    const rows = allDonations.map(d => [
+        d.name || '',
+        d.category || '',
+        d.roll || '',
+        Number(d.amount) || 0,
+        d.transactionId || '',
+        d.createdAt && d.createdAt.seconds
+            ? new Date(d.createdAt.seconds * 1000).toLocaleString('en-IN')
+            : '',
+        d.status || 'PENDING',
+    ]);
+
+    const csv = [headers, ...rows]
+        .map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\r\n');
+
+    // BOM (﻿) so Excel opens UTF-8 correctly
+    const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `donations_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 /* ============ STATS ============ */
