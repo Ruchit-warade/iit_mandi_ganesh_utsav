@@ -692,6 +692,54 @@
     justify-content: center;
 }
 
+/* --- Gallery upload bar + captions --- */
+.gallery-upload-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.caption-input {
+    padding: 0.6rem 1rem;
+    background: rgba(255, 248, 240, 0.05);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--radius-md);
+    color: var(--cream);
+    font-size: var(--text-sm);
+    min-width: 220px;
+}
+
+.caption-input::placeholder { color: var(--text-muted); }
+.caption-input:focus { outline: none; border-color: var(--gold); }
+
+.gallery-caption-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 6px 10px;
+    background: rgba(5, 5, 8, 0.78);
+    color: var(--cream);
+    font-size: var(--text-xs);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gallery-caption-bar em { color: var(--text-muted); font-style: italic; }
+
+.upload-error {
+    margin-bottom: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    background: rgba(244, 67, 54, 0.12);
+    border: 1px solid rgba(244, 67, 54, 0.35);
+    color: #F44336;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+}
+
 /* --- Dashboard Team --- */
 .dashboard-team-grid {
     display: grid;

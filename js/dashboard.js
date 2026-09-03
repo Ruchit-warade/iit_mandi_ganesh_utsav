@@ -84,6 +84,11 @@ function initDashboard() {
     loadSettings();
 }
 
+// Renders the contributions table (also re-rendered by loadStats' snapshot)
+function loadContributions() {
+    renderContributions();
+}
+
 function setupSignOut() {
     document.getElementById('signout-btn').addEventListener('click', () => {
         import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js')
@@ -414,16 +419,26 @@ function renderGallery() {
     grid.innerHTML = galleryDocs.map((item, i) => `
         <div class="dash-gallery-item">
             <img src="${item.url}" alt="${escapeHtml(item.caption || '')}" loading="lazy">
+            <div class="gallery-caption-bar">${escapeHtml(item.caption) || '<em>No caption</em>'}</div>
             <div class="reorder-controls">
                 <button class="reorder-btn" onclick="window.moveGallery('${item.id}', -1)" ${i === 0 ? 'disabled' : ''}>▲</button>
                 <button class="reorder-btn" onclick="window.moveGallery('${item.id}', 1)" ${i === galleryDocs.length - 1 ? 'disabled' : ''}>▼</button>
             </div>
             <div class="item-actions">
+                <button class="action-btn action-edit" onclick="window.editGalleryCaption('${item.id}')">Caption</button>
                 <button class="action-btn action-delete" onclick="window.deleteGallery('${item.id}')">Delete</button>
             </div>
         </div>
     `).join('');
 }
+
+window.editGalleryCaption = async (id) => {
+    const item = galleryDocs.find(d => d.id === id);
+    if (!item) return;
+    const next = prompt('Enter a short description for this photo:', item.caption || '');
+    if (next === null) return;
+    await updateDoc(doc(db, 'gallery', id), { caption: next.trim() });
+};
 
 function setupGalleryUpload() {
     const input = document.getElementById('photo-input');
@@ -442,34 +457,48 @@ async function uploadGalleryFiles(files) {
     const progress = document.getElementById('upload-progress');
     const bar = document.getElementById('upload-bar');
     const status = document.getElementById('upload-status');
+    const errorEl = document.getElementById('upload-error');
+    const captionInput = document.getElementById('photo-caption');
+    const caption = captionInput ? captionInput.value.trim() : '';
     progress.hidden = false;
+    if (errorEl) errorEl.hidden = true;
 
     let uploaded = 0;
+    let failed = 0;
     const total = files.length;
 
-    for (const file of files) {
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
         try {
-            const filename = `gallery/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+            const filename = `gallery/${Date.now()}_${i}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
             const fileRef = ref(storage, filename);
             await uploadBytes(fileRef, file);
             const url = await getDownloadURL(fileRef);
+
+            // Use the caption field; number it if uploading multiple
+            const base = file.name.replace(/\.[^.]+$/, '');
+            const cap = files.length === 1 ? (caption || base) : (caption ? `${caption} ${i + 1}` : base);
 
             // Compute next order
             const nextOrder = galleryDocs.length ? Math.max(...galleryDocs.map(d => d.order || 0)) + 1 : 0;
             await addDoc(collection(db, 'gallery'), {
                 url,
-                caption: file.name.replace(/\.[^.]+$/, ''),
+                caption: cap,
                 order: nextOrder,
                 createdAt: serverTimestamp(),
             });
 
             uploaded++;
-            bar.style.width = `${(uploaded / total) * 100}%`;
-            status.textContent = `Uploading… ${uploaded}/${total}`;
         } catch (e) {
             console.error('Upload error:', e);
+            failed++;
         }
+        bar.style.width = `${((uploaded + failed) / total) * 100}%`;
+        status.textContent = `Uploading… ${uploaded + failed}/${total}`;
     }
+
+    if (captionInput) captionInput.value = '';
+    if (failed > 0 && errorEl) errorEl.hidden = false;
 
     setTimeout(() => { progress.hidden = true; bar.style.width = '0%'; }, 1500);
 }
