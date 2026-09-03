@@ -137,17 +137,165 @@ function renderStats(donations) {
     const verified = donations.filter(d => d.status === 'VERIFIED');
     const pending = donations.filter(d => d.status === 'PENDING');
     const rejected = donations.filter(d => d.status === 'REJECTED');
-    const students = donations.filter(d => d.category === 'student');
-    const teachers = donations.filter(d => d.category === 'teacher');
+    const sum = arr => arr.reduce((s, d) => s + (Number(d.amount) || 0), 0);
+    const avg = totalCount ? totalAmount / totalCount : 0;
 
-    document.getElementById('stat-total-count').textContent = totalCount;
-    document.getElementById('stat-total-amount').textContent = `₹${totalAmount.toLocaleString('en-IN')}`;
-    document.getElementById('stat-contributors').textContent = verified.length;
-    document.getElementById('stat-student').textContent = students.length;
-    document.getElementById('stat-teacher').textContent = teachers.length;
-    document.getElementById('stat-pending').textContent = pending.length;
-    document.getElementById('stat-verified').textContent = verified.length;
-    document.getElementById('stat-rejected').textContent = rejected.length;
+    setText('stat-total-count', `${totalCount}`);
+    setText('stat-total-amount', `₹${totalAmount.toLocaleString('en-IN')}`);
+    setText('stat-verified', verified.length);
+    setText('stat-verified-amount', `₹${sum(verified).toLocaleString('en-IN')}`);
+    setText('stat-pending', pending.length);
+    setText('stat-pending-amount', `₹${sum(pending).toLocaleString('en-IN')}`);
+    setText('stat-rejected', rejected.length);
+    setText('stat-rejected-amount', `₹${sum(rejected).toLocaleString('en-IN')}`);
+    setText('stat-avg', `₹${Math.round(avg).toLocaleString('en-IN')}`);
+    setText('stat-contributors', `${verified.length}`);
+
+    renderCharts(donations);
+    renderStatusLegend(donations);
+    renderTopContributors(donations);
+}
+
+function setText(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+}
+
+/* ============ CHARTS ============ */
+let charts = {};
+
+function destroyCharts() {
+    Object.values(charts).forEach(c => { try { c.destroy(); } catch (e) {} });
+    charts = {};
+}
+
+function renderCharts(donations) {
+    if (typeof Chart === 'undefined') return;
+    destroyCharts();
+
+    const cats = ['student', 'teacher', 'alumni', 'staff', 'other'];
+    const catLabels = { student: 'Student', teacher: 'Teacher', alumni: 'Alumni', staff: 'Staff', other: 'Other' };
+
+    // Donut: donation count by category
+    charts.category = new Chart(document.getElementById('chart-category'), {
+        type: 'doughnut',
+        data: {
+            labels: cats.map(c => catLabels[c]),
+            datasets: [{
+                data: cats.map(c => donations.filter(d => d.category === c).length),
+                backgroundColor: ['#D4A843', '#FF6B35', '#E8C96A', '#B8922E', '#6b4f1f'],
+                borderWidth: 2,
+                borderColor: '#141420',
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom', labels: { color: 'rgba(255,248,240,0.65)', padding: 14 } } }
+        }
+    });
+
+    // Bar: amount by category
+    charts.categoryAmount = new Chart(document.getElementById('chart-category-amount'), {
+        type: 'bar',
+        data: {
+            labels: cats.map(c => catLabels[c]),
+            datasets: [{
+                label: 'Amount (₹)',
+                data: cats.map(c => donations.filter(d => d.category === c).reduce((s, d) => s + (Number(d.amount) || 0), 0)),
+                backgroundColor: 'rgba(212,168,67,0.75)',
+                hoverBackgroundColor: '#E8C96A',
+                borderRadius: 6,
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: 'rgba(255,248,240,0.65)' }, grid: { color: 'rgba(212,168,67,0.08)' } },
+                y: { beginAtZero: true, ticks: { color: 'rgba(255,248,240,0.65)' }, grid: { color: 'rgba(212,168,67,0.08)' } }
+            }
+        }
+    });
+
+    // Line: last 14 days
+    const today = new Date();
+    const labels = [], amounts = [], counts = [];
+    for (let i = 13; i >= 0; i--) {
+        const d = new Date(today); d.setDate(today.getDate() - i);
+        const key = d.toDateString();
+        let amt = 0, cnt = 0;
+        donations.forEach(don => {
+            if (!don.createdAt || !don.createdAt.seconds) return;
+            if (new Date(don.createdAt.seconds * 1000).toDateString() === key) { amt += Number(don.amount) || 0; cnt++; }
+        });
+        labels.push(d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }));
+        amounts.push(amt); counts.push(cnt);
+    }
+
+    charts.timeline = new Chart(document.getElementById('chart-timeline'), {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                { label: 'Amount (₹)', data: amounts, borderColor: '#D4A843', backgroundColor: 'rgba(212,168,67,0.15)', fill: true, tension: 0.4, yAxisID: 'y' },
+                { label: 'Donations', data: counts, borderColor: '#FF6B35', backgroundColor: 'rgba(255,107,53,0.15)', fill: false, tension: 0.4, yAxisID: 'y1' }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: 'rgba(255,248,240,0.65)' } } },
+            scales: {
+                x: { ticks: { color: 'rgba(255,248,240,0.65)', maxRotation: 0 }, grid: { color: 'rgba(212,168,67,0.06)' } },
+                y: { beginAtZero: true, position: 'left', ticks: { color: 'rgba(212,168,67,0.9)' }, grid: { color: 'rgba(212,168,67,0.08)' } },
+                y1: { beginAtZero: true, position: 'right', ticks: { color: 'rgba(255,107,53,0.9)' }, grid: { drawOnChartArea: false } }
+            }
+        }
+    });
+}
+
+function renderStatusLegend(donations) {
+    const statuses = ['VERIFIED', 'PENDING', 'REJECTED'];
+    const colors = { VERIFIED: '#4CAF50', PENDING: '#FF6B35', REJECTED: '#F44336' };
+    const total = donations.length || 1;
+    const el = document.getElementById('status-legend');
+    el.innerHTML = statuses.map(s => {
+        const arr = donations.filter(d => d.status === s);
+        const n = arr.length;
+        const amt = arr.reduce((a, d) => a + (Number(d.amount) || 0), 0);
+        return `
+            <div class="legend-row">
+                <span class="legend-dot" style="background:${colors[s]}"></span>
+                <span class="legend-label">${s.charAt(0) + s.slice(1).toLowerCase()}</span>
+                <span class="legend-bar"><span style="width:${(n / total) * 100}%"></span></span>
+                <span class="legend-value">${n} · ₹${amt.toLocaleString('en-IN')}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderTopContributors(donations) {
+    const el = document.getElementById('top-contributors');
+    const map = {};
+    donations.filter(d => d.status === 'VERIFIED').forEach(d => {
+        const name = (d.name || 'Anonymous').trim();
+        if (!map[name]) map[name] = 0;
+        map[name] += Number(d.amount) || 0;
+    });
+    const sorted = Object.entries(map).sort((a, b) => b[1] - a[1]).slice(0, 10);
+
+    if (sorted.length === 0) {
+        el.innerHTML = '<div class="empty-inline">No verified donations yet.</div>';
+        return;
+    }
+    const max = sorted[0][1] || 1;
+    el.innerHTML = sorted.map(([name, amt], i) => `
+        <div class="top-row">
+            <span class="top-rank">${i + 1}</span>
+            <span class="top-name">${escapeHtml(name)}</span>
+            <span class="top-bar"><span style="width:${Math.max(6, (amt / max) * 100)}%"></span></span>
+            <span class="top-amount">₹${amt.toLocaleString('en-IN')}</span>
+        </div>
+    `).join('');
 }
 
 /* ============ CONTRIBUTIONS ============ */

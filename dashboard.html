@@ -14,6 +14,9 @@
 
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/dashboard.css">
+
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 </head>
 <body class="dashboard-body">
     <!-- Auth Gate -->
@@ -46,39 +49,73 @@
             <div id="tab-overview" class="tab-panel active">
                 <div class="tab-header">
                     <h2>Overview</h2>
+                    <span class="tab-subtitle">Donation analytics & performance</span>
                 </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <span class="stat-label">Total Donations</span>
-                        <span class="stat-value" id="stat-total-count">—</span>
+
+                <!-- KPI hero row -->
+                <div class="kpi-hero">
+                    <div class="kpi-main stat-accent">
+                        <span class="kpi-label">Total Raised</span>
+                        <span class="kpi-value" id="stat-total-amount">₹—</span>
+                        <span class="kpi-foot" id="stat-total-count">0 donations</span>
                     </div>
-                    <div class="stat-card stat-accent">
-                        <span class="stat-label">Total Amount</span>
-                        <span class="stat-value" id="stat-total-amount">₹—</span>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Verified</span>
+                        <span class="kpi-value" id="stat-verified">—</span>
+                        <span class="kpi-foot" id="stat-verified-amount">₹0</span>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Contributors</span>
-                        <span class="stat-value" id="stat-contributors">—</span>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Pending</span>
+                        <span class="kpi-value" id="stat-pending">—</span>
+                        <span class="kpi-foot" id="stat-pending-amount">₹0</span>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Student</span>
-                        <span class="stat-value" id="stat-student">—</span>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Rejected</span>
+                        <span class="kpi-value" id="stat-rejected">—</span>
+                        <span class="kpi-foot" id="stat-rejected-amount">₹0</span>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Teacher</span>
-                        <span class="stat-value" id="stat-teacher">—</span>
+                    <div class="kpi-card">
+                        <span class="kpi-label">Avg. Donation</span>
+                        <span class="kpi-value" id="stat-avg">₹—</span>
+                        <span class="kpi-foot" id="stat-contributors">0 contributors</span>
                     </div>
-                    <div class="stat-card stat-accent">
-                        <span class="stat-label">Pending</span>
-                        <span class="stat-value" id="stat-pending">—</span>
+                </div>
+
+                <!-- Charts row 1 -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Donations by Category</h3>
+                        <div class="chart-box">
+                            <canvas id="chart-category"></canvas>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Verified</span>
-                        <span class="stat-value" id="stat-verified">—</span>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Amount by Category</h3>
+                        <div class="chart-box">
+                            <canvas id="chart-category-amount"></canvas>
+                        </div>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Rejected</span>
-                        <span class="stat-value" id="stat-rejected">—</span>
+                </div>
+
+                <!-- Charts row 2 -->
+                <div class="charts-grid">
+                    <div class="chart-card chart-wide">
+                        <h3 class="chart-title">Donations Over Time (last 14 days)</h3>
+                        <div class="chart-box">
+                            <canvas id="chart-timeline"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category breakdown + top contributors -->
+                <div class="insights-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title">Status Breakdown</h3>
+                        <div class="status-legend" id="status-legend"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title">Top Contributors</h3>
+                        <div class="top-list" id="top-contributors"></div>
                     </div>
                 </div>
             </div>
@@ -213,6 +250,6 @@
         </div>
     </div>
 
-    <script type="module" src="js/dashboard.js?v=2"></script>
+    <script type="module" src="js/dashboard.js?v=3"></script>
 </body>
 </html>
