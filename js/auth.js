@@ -49,13 +49,26 @@ export async function verifyOrganiserIdentity(db, collection, queryFn, where, ge
     console.log('[Auth] Looking up:', { name, pinHash });
 
     try {
+        // Debug: dump all organisers
+        const allSnap = await getDocs(collection(db, 'organisers'));
+        console.log('[Auth] ALL organisers:', allSnap.size, 'docs');
+        allSnap.forEach(doc => {
+            const d = doc.data();
+            console.log('[Auth] Doc:', doc.id, {
+                displayName: d.displayName,
+                displayNameType: typeof d.displayName,
+                displayNameBytes: [...(d.displayName || '')].map(c => c.charCodeAt(0)),
+                pinHash: d.pinHash,
+                pinHashType: typeof d.pinHash,
+            });
+        });
+
         const q = queryFn(collection(db, 'organisers'),
             where('displayName', '==', name),
             where('pinHash', '==', pinHash));
         const snapshot = await getDocs(q);
 
-        console.log('[Auth] Query results:', snapshot.size, 'docs found');
-        snapshot.forEach(doc => console.log('[Auth] Doc:', doc.id, doc.data()));
+        console.log('[Auth] Filtered results:', snapshot.size, 'docs found');
 
         if (snapshot.empty) return null;
 
