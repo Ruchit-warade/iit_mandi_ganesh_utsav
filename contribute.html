@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contribute — IIT Mandi Ganesh Utsav</title>
+    <meta name="description" content="Contribute to IIT Mandi Ganesh Utsav — Ganpati in the Mountains.">
+
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🪔%3C/text%3E%3C/svg%3E">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/background.css">
+    <link rel="stylesheet" href="css/contribute.css">
+</head>
+<body class="contribute-page loading">
+    <!-- FIXED BACKGROUND -->
+    <div id="bg-layer" aria-hidden="true">
+        <svg id="bg-canvas" preserveAspectRatio="xMidYMid slice"></svg>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="contribute-nav">
+        <div class="nav-container container">
+            <a href="index.html" class="nav-brand">← Back to Utsav</a>
+            <span class="nav-brand" style="font-size: var(--text-sm); font-weight:400; color: var(--text-muted);">IIT Mandi Ganesh Utsav</span>
+        </div>
+    </nav>
+
+    <main class="contribute-main">
+        <div class="form-container glass">
+            <div class="form-header">
+                <div class="form-icon">🪔</div>
+                <h1>Contribute to Ganesh Utsav</h1>
+                <p>Ganpati in the Mountains — make the celebration possible</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step-dot active" id="step-dot-1"></div>
+                <div class="step-line"></div>
+                <div class="step-dot" id="step-dot-2"></div>
+                <div class="step-line"></div>
+                <div class="step-dot" id="step-dot-3"></div>
+            </div>
+
+            <!-- STEP 1: CONTRIBUTOR DETAILS -->
+            <div id="step-1" class="form-step active">
+                <form id="details-form" novalidate>
+                    <div class="form-group" id="group-name">
+                        <label for="input-name">Full Name</label>
+                        <input type="text" id="input-name" placeholder="Your full name" required>
+                        <div class="error-msg">Please enter your name</div>
+                    </div>
+
+                    <div class="form-group" id="group-category">
+                        <label for="input-category">Category</label>
+                        <select id="input-category" required>
+                            <option value="">Select your category</option>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="alumni">Alumni</option>
+                            <option value="staff">Staff</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-msg">Please select a category</div>
+                    </div>
+
+                    <div class="form-group" id="group-roll">
+                        <label for="input-roll">IIT Mandi Roll No. / Dept (optional)</label>
+                        <input type="text" id="input-roll" placeholder="e.g. B23CSE001 or School of Computing">
+                    </div>
+
+                    <div class="form-group" id="group-amount">
+                        <label for="input-amount">Contribution Amount (₹)</label>
+                        <div class="amount-presets">
+                            <button type="button" class="amount-preset" data-amount="100">₹100</button>
+                            <button type="button" class="amount-preset" data-amount="250">₹250</button>
+                            <button type="button" class="amount-preset" data-amount="500">₹500</button>
+                            <button type="button" class="amount-preset" data-amount="1000">₹1000</button>
+                            <button type="button" class="amount-preset" data-amount="2000">₹2000</button>
+                            <button type="button" class="amount-preset" data-amount="5000">₹5000</button>
+                        </div>
+                        <input type="number" id="input-amount" placeholder="Or enter custom amount" min="1" step="1">
+                        <div class="error-msg">Please enter a valid amount</div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large">Next</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- STEP 2: PAYMENT -->
+            <div id="step-2" class="form-step">
+                <form id="payment-form" novalidate>
+                    <div class="qr-section">
+                        <div class="qr-frame">
+                            <img id="qr-code" src="" alt="Scan to pay" style="display:none;">
+                            <div id="qr-placeholder" class="qr-placeholder">Loading payment QR code…</div>
+                        </div>
+                        <p>Scan the QR code above with any UPI app to make your contribution.</p>
+                    </div>
+
+                    <div class="contribution-summary">
+                        <div class="summary-row">
+                            <span class="label">Name</span>
+                            <span class="value" id="summary-name">—</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Category</span>
+                            <span class="value" id="summary-category">—</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="label">Amount</span>
+                            <span class="value" id="summary-amount">—</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="group-txn">
+                        <label for="input-txn">Transaction ID</label>
+                        <input type="text" id="input-txn" placeholder="Enter the UPI transaction ID" required>
+                        <div class="error-msg">Please enter the transaction ID</div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large" id="submit-btn">Submit Contribution</button>
+                        <button type="button" class="btn btn-outline" id="back-btn">← Back</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- STEP 3: SUCCESS -->
+            <div id="step-3" class="form-step">
+                <div class="success-state">
+                    <div class="success-icon">🙏</div>
+                    <h2>Thank You</h2>
+                    <p>Your contribution has been received. The organising team will verify your transaction shortly.</p>
+                    <a href="index.html" class="btn btn-primary">Return Home</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module" src="js/contribute.js"></script>
+</body>
+</html>

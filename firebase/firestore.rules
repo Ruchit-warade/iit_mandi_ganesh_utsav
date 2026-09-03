@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Donations: anyone can create (public contribution form),
+    // only signed-in organisers can read/update/delete
+    match /donations/{docId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // Gallery: public read (main site), only organisers can write
+    match /gallery/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Organisers: readable pre-auth for stage-1 PIN lookup.
+    // PIN is stored as a salted SHA-256 hash (not reversible).
+    // Writes restricted to authenticated organisers.
+    match /organisers/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Event settings: public read (QR code shown on contribute page),
+    // only organisers can write
+    match /event/{docId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

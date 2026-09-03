@@ -1,0 +1,179 @@
+/* ============================================
+   FIXED BACKGROUND LAYERS
+   ============================================ */
+
+/* --- Fixed Background Container --- */
+#bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-background);
+    overflow: hidden;
+    background: var(--dark-bg);
+}
+
+/* Subtle radial glow behind Ganpati */
+#bg-layer::before {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(212, 168, 67, 0.06) 0%,
+        rgba(212, 168, 67, 0.02) 40%,
+        transparent 70%
+    );
+    pointer-events: none;
+}
+
+/* Bottom mist / fog */
+#bg-layer::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(
+        to top,
+        var(--dark-bg) 0%,
+        rgba(10, 10, 15, 0.8) 40%,
+        transparent 100%
+    );
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* --- Background SVG Canvas --- */
+#bg-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Scale SVG to fill viewport while maintaining aspect ratio */
+#bg-canvas .ganpati-group {
+    /* Centered in viewport — slightly above center for hero text */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    width: min(45vw, 380px);
+    height: auto;
+    opacity: 0.45;
+}
+
+/* --- Mountain Layers --- */
+.mountain-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    pointer-events: none;
+}
+
+.mountain-layer svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* --- Particles Container --- */
+#particle-paths {
+    pointer-events: none;
+}
+
+/* --- Video Ganpati --- */
+#ganpati-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    height: min(74vh, 620px);
+    width: auto;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 1.2s ease-out;
+}
+
+/* Hide SVG Ganpati paths (video replaces them) */
+#ganpati-paths {
+    display: none;
+}
+
+/* --- SVG Drawing Animation States (legacy — hidden) --- */
+#ganpati-paths path {
+    fill: none;
+    stroke: var(--gold);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    will-change: stroke-dashoffset;
+}
+
+/* Subtle gold glow on completed drawing */
+#ganpati-paths.glow-active {
+    filter: url(#gold-glow);
+}
+
+/* --- Loading State --- */
+body.loading #bg-layer {
+    opacity: 0;
+    animation: bgFadeIn 1.5s ease-out 0.3s forwards;
+}
+
+@keyframes bgFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- Reduced Motion --- */
+@media (prefers-reduced-motion: reduce) {
+    #bg-layer {
+        animation: none !important;
+    }
+
+    body.loading #bg-layer {
+        opacity: 1;
+    }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    #bg-layer::before {
+        width: 300px;
+        height: 300px;
+        top: 35%;
+    }
+
+    .ganpati-group {
+        width: min(65vw, 280px) !important;
+        opacity: 0.35;
+    }
+
+    #ganpati-video {
+        height: min(68vh, 460px);
+    }
+}
+
+@media (max-width: 480px) {
+    .ganpati-group {
+        width: min(75vw, 240px) !important;
+        opacity: 0.3;
+    }
+
+    #bg-layer::before {
+        width: 250px;
+        height: 250px;
+    }
+
+    #ganpati-video {
+        height: min(62vh, 400px);
+    }
+}

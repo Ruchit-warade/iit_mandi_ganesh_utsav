@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIT Mandi Ganesh Utsav — Ganpati in the Mountains</title>
+    <meta name="description" content="IIT Mandi's biggest flagship festival. Celebrate Ganpati in the mountains — where devotion meets the Himalayas.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="IIT Mandi Ganesh Utsav">
+    <meta property="og:description" content="Ganpati in the Mountains — IIT Mandi's biggest flagship festival.">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon (inline gold Om/Ganpati) -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E🪔%3C/text%3E%3C/svg%3E">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/background.css">
+    <link rel="stylesheet" href="css/sections.css">
+</head>
+<body class="loading">
+    <!-- FIXED BACKGROUND -->
+    <div id="bg-layer" aria-hidden="true">
+        <svg id="bg-canvas" preserveAspectRatio="xMidYMid slice"></svg>
+    </div>
+
+    <!-- SCROLLABLE FOREGROUND -->
+    <div id="foreground">
+        <!-- Navigation -->
+        <nav class="site-nav" id="site-nav">
+            <div class="nav-container container">
+                <a href="#hero" class="nav-brand">IIT Mandi Ganesh Utsav</a>
+                <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="nav-links" id="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#celebration">Celebration</a>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#team">Team</a>
+                    <a href="contribute.html" class="nav-cta">Contribute</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <!-- HERO -->
+            <section id="hero" class="hero">
+                <div class="hero-content container">
+                    <span class="hero-label">IIT Mandi • Ganesh Utsav</span>
+                    <h1 class="hero-title">Ganpati<br>in the Mountains</h1>
+                    <p class="hero-subtitle">IIT Mandi Ganesh Utsav</p>
+                    <p class="hero-tagline">Where devotion meets the mountains</p>
+                    <a href="contribute.html" class="btn btn-primary btn-large">Contribute</a>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-value" id="stat-contributors">—</div>
+                            <div class="hero-stat-label">Contributors</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-value" id="stat-days">—</div>
+                            <div class="hero-stat-label">Days to Utsav</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-value" id="stat-year">2026</div>
+                            <div class="hero-stat-label">Edition</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ABOUT -->
+            <section id="about" class="content-section">
+                <div class="container">
+                    <div class="glass-section scroll-reveal">
+                        <div class="about-grid">
+                            <div>
+                                <span class="section-label">About the Celebration</span>
+                                <h2 class="section-title">Ganpati in<br><span class="text-gold">the Mountains</span></h2>
+                            </div>
+                            <div>
+                                <p class="section-text">
+                                    Ganesh Utsav is IIT Mandi's biggest flagship festival — a celebration
+                                    that brings students, teachers, and the wider IIT Mandi community together
+                                    in devotion and joy. Surrounded by the majestic Himalayas, our celebration
+                                    of Lord Ganesha carries a unique character found nowhere else.
+                                </p>
+                                <p class="section-text" style="margin-top: 1rem;">
+                                    Here, ancient devotion meets mountain serenity. The golden figure of
+                                    Ganpati rises against pine and snow — a sight that turns the festival
+                                    into a journey of the soul.
+                                </p>
+                                <ul class="about-feature">
+                                    <li>IIT Mandi's biggest flagship festival</li>
+                                    <li>Students, faculty & community united in celebration</li>
+                                    <li>A uniquely Himalayan Ganpati experience</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CELEBRATION -->
+            <section id="celebration" class="content-section">
+                <div class="container">
+                    <div class="section-intro scroll-reveal">
+                        <span class="section-label">The Experience</span>
+                        <h2 class="section-title">A Celebration Like No Other</h2>
+                        <p class="section-text">Each moment of the utsav is crafted to honour tradition within the embrace of the mountains.</p>
+                    </div>
+                    <div class="celebration-grid">
+                        <div class="celebration-card scroll-reveal">
+                            <div class="celebration-icon">🪔</div>
+                            <h3>Devotion</h3>
+                            <p>Aarti, bhajans, and prayers that resonate across the valley as the evening mist settles over the hills.</p>
+                        </div>
+                        <div class="celebration-card scroll-reveal delay-1">
+                            <div class="celebration-icon">🎭</div>
+                            <h3>Culture</h3>
+                            <p>Music, dance, and performances that celebrate the rich heritage of Indian festivals in the Himalayan spirit.</p>
+                        </div>
+                        <div class="celebration-card scroll-reveal delay-2">
+                            <div class="celebration-icon">🤝</div>
+                            <h3>Community</h3>
+                            <p>Students and teachers together — building bonds, sharing prasad, and creating memories against the mountain backdrop.</p>
+                        </div>
+                        <div class="celebration-card scroll-reveal">
+                            <div class="celebration-icon">🏔️</div>
+                            <h3>The Mountains</h3>
+                            <p>Ganpati worshipped in the shadow of the Himalayas — a divine presence framed by snow-capped peaks.</p>
+                        </div>
+                        <div class="celebration-card scroll-reveal delay-1">
+                            <div class="celebration-icon">🎶</div>
+                            <h3>Sound & Song</h3>
+                            <p>The gentle rhythm of dhol and the sweetness of devotional songs carried on the cool mountain air.</p>
+                        </div>
+                        <div class="celebration-card scroll-reveal delay-2">
+                            <div class="celebration-icon">💫</div>
+                            <h3>Togetherness</h3>
+                            <p>A festival that belongs to every member of the IIT Mandi family — a celebration of unity and gratitude.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GALLERY -->
+            <section id="gallery" class="content-section">
+                <div class="container">
+                    <div class="section-intro scroll-reveal">
+                        <span class="section-label">Gallery</span>
+                        <h2 class="section-title">Moments from<br><span class="text-gold">Ganesh Utsav</span></h2>
+                        <p class="section-text">A glimpse into the devotion and joy of past celebrations.</p>
+                    </div>
+                    <div class="gallery-grid" id="gallery-grid">
+                        <!-- Populated dynamically from Firebase -->
+                    </div>
+                    <p class="gallery-note scroll-reveal">Photographs from the celebration will appear here.</p>
+                </div>
+            </section>
+
+            <!-- ORGANISING TEAM -->
+            <section id="team" class="content-section">
+                <div class="container">
+                    <div class="section-intro scroll-reveal">
+                        <span class="section-label">Organising Team</span>
+                        <h2 class="section-title">The People Behind<br><span class="text-gold">the Celebration</span></h2>
+                        <p class="section-text">Dedicated hearts working to bring Ganpati to the mountains.</p>
+                    </div>
+                    <div class="team-grid" id="team-grid">
+                        <!-- Populated dynamically from Firebase -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTRIBUTE CTA -->
+            <section id="contribute" class="content-section">
+                <div class="container">
+                    <div class="cta-card scroll-reveal">
+                        <h2>Be a Part of<br><span class="text-gold">the Celebration</span></h2>
+                        <p>
+                            Help us celebrate Ganpati in the mountains and make IIT Mandi's biggest
+                            flagship festival possible. Every contribution brings the utsav to life.
+                        </p>
+                        <a href="contribute.html" class="btn btn-primary btn-large">Contribute</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-logo">IIT Mandi Ganesh Utsav</div>
+                <div class="footer-tagline">Ganpati in the Mountains</div>
+                <div class="footer-links">
+                    <a href="#about">About</a>
+                    <a href="#gallery">Gallery</a>
+                    <a href="#team">Team</a>
+                    <a href="contribute.html">Contribute</a>
+                </div>
+                <div class="footer-copyright">
+                    © 2026 IIT Mandi Ganesh Utsav. All rights reserved.<br>
+                    Crafted with devotion in the Himalayas.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div id="lightbox" class="lightbox" aria-hidden="true">
+        <button class="lightbox-close" aria-label="Close">✕</button>
+        <button class="lightbox-prev" aria-label="Previous">‹</button>
+        <button class="lightbox-next" aria-label="Next">›</button>
+        <span class="lightbox-counter"></span>
+        <div class="lightbox-content">
+            <img class="lightbox-img" src="" alt="">
+            <div class="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
