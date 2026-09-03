@@ -163,9 +163,14 @@
                     <input type="text" id="photo-caption" class="caption-input" placeholder="Short description (e.g. Evening Aarti)" maxlength="120">
                     <button class="btn btn-primary" id="add-photo-btn">Add Photo</button>
                 </div>
+                <div class="gallery-upload-bar" style="margin-top: var(--space-sm);">
+                    <input type="file" id="photo-file" accept="image/*">
+                    <button class="btn btn-outline" id="upload-photo-btn">Upload from local (auto-push)</button>
+                </div>
                 <p class="text-small" style="margin-top: var(--space-xs);">
-                    Put the image file in <code>assets/images/gallery/</code>, commit &amp; push to GitHub,
-                    then enter its path above.
+                    <strong>Auto-push:</strong> pick a photo from your computer and it's committed to the repo
+                    automatically (set your GitHub token in Settings first). Or enter a path for a file you
+                    already committed yourself.
                 </p>
                 <div id="add-photo-error" class="upload-error" hidden></div>
                 <div class="dashboard-gallery-grid" id="dashboard-gallery-grid" style="margin-top: var(--space-md);"></div>
@@ -187,6 +192,22 @@
                 <div class="tab-header">
                     <h2>Event Settings</h2>
                 </div>
+
+                <!-- GitHub connection -->
+                <div class="glass" style="max-width: 700px; padding: var(--space-xl); margin-bottom: var(--space-lg);">
+                    <h3 class="chart-title">GitHub Connection</h3>
+                    <p class="text-small">Used to auto-push photos from your computer straight to this repo.
+                        Stored only in your browser — never in the public code.</p>
+                    <div class="settings-form" style="margin-top: var(--space-md);">
+                        <div class="form-group">
+                            <label for="gh-token">GitHub Personal Access Token</label>
+                            <input type="password" id="gh-token" placeholder="ghp_..." autocomplete="off">
+                        </div>
+                        <button type="button" class="btn btn-primary" id="save-token-btn">Save Token</button>
+                        <span class="text-small" id="token-status" style="margin-left: var(--space-sm);"></span>
+                    </div>
+                </div>
+
                 <div class="glass" style="max-width: 700px; padding: var(--space-xl);">
                     <form id="settings-form" class="settings-form">
                         <div class="form-group">
@@ -204,6 +225,8 @@
                         <div class="form-group">
                             <label for="set-qr">Payment QR Code path</label>
                             <input type="text" id="set-qr" placeholder="assets/images/payment/qr.png">
+                            <input type="file" id="set-qr-file" accept="image/*" style="margin-top: var(--space-xs);">
+                            <button type="button" class="btn btn-outline btn-sm" id="upload-qr-btn" style="margin-top: var(--space-xs);">Upload from local</button>
                             <img id="qr-preview" class="qr-preview" alt="QR preview" style="display:none;">
                             <p class="text-small" style="margin-top: var(--space-xs);">Path to the QR image in the repo, shown on the contribution page.</p>
                         </div>
@@ -246,7 +269,9 @@
                 <div class="form-group">
                     <label for="member-photo">Photo path</label>
                     <input type="text" id="member-photo" placeholder="assets/images/organisers/name.jpg">
-                    <p class="text-small" style="margin-top: var(--space-xs);">Path to the member's photo in the repo. Leave blank to show initials.</p>
+                    <input type="file" id="member-photo-file" accept="image/*" style="margin-top: var(--space-xs);">
+                    <button type="button" class="btn btn-outline btn-sm" id="upload-member-photo-btn" style="margin-top: var(--space-xs);">Upload from local</button>
+                    <p class="text-small" style="margin-top: var(--space-xs);">Upload from local auto-pushes to the repo, or enter a path manually. Leave blank to show initials.</p>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-outline" id="member-cancel">Cancel</button>
@@ -256,6 +281,6 @@
         </div>
     </div>
 
-    <script type="module" src="js/dashboard.js?v=6"></script>
+    <script type="module" src="js/dashboard.js?v=7"></script>
 </body>
 </html>

@@ -12,6 +12,7 @@
  */
 
 import { hashPin, makeOrganiserEmail } from './auth.js?v=3';
+import { getGitHubToken, setGitHubToken, hasGitHubToken, uploadToGitHub } from './github-upload.js?v=1';
 
 // Firebase refs (set after auth)
 let db, collection, onSnapshot, query, orderBy, addDoc, updateDoc, deleteDoc, doc,
@@ -73,11 +74,28 @@ function onAuthStateChangedSafe(cb) {
 
 function initDashboard() {
     setupSignOut();
+    setupGitHubToken();
     loadStats();
     loadContributions();
     loadGallery();
     loadTeam();
     loadSettings();
+}
+
+/* ============ GITHUB TOKEN ============ */
+function setupGitHubToken() {
+    const input = document.getElementById('gh-token');
+    if (input) input.value = getGitHubToken();
+
+    const saveBtn = document.getElementById('save-token-btn');
+    const status = document.getElementById('token-status');
+    if (saveBtn) saveBtn.addEventListener('click', () => {
+        setGitHubToken(input.value.trim());
+        if (status) {
+            status.textContent = hasGitHubToken() ? 'Token saved (this browser only).' : 'Token cleared.';
+            setTimeout(() => { status.textContent = ''; }, 3000);
+        }
+    });
 }
 
 // Renders the contributions table (also re-rendered by loadStats' snapshot)
@@ -441,6 +459,37 @@ function setupGalleryAdd() {
     const pathInput = document.getElementById('photo-path');
     const captionInput = document.getElementById('photo-caption');
 
+    // Local upload → auto-push to repo, then fill path input
+    const uploadBtn = document.getElementById('upload-photo-btn');
+    const fileInput = document.getElementById('photo-file');
+    if (uploadBtn && fileInput) {
+        uploadBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) { alert('Pick a photo first.'); return; }
+            if (!hasGitHubToken()) { alert('Set your GitHub token in Settings first.'); return; }
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading…';
+            try {
+                const ts = Date.now();
+                const ext = file.name.split('.').pop();
+                const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/\.[^.]+$/, '');
+                const repoPath = `assets/images/gallery/${safeName}_${ts}.${ext}`;
+                await uploadToGitHub(file, repoPath);
+                if (pathInput) pathInput.value = repoPath;
+                if (!captionInput.value.trim() && file.name) {
+                    captionInput.value = safeName.replace(/[_-]/g, ' ');
+                }
+                fileInput.value = '';
+            } catch (e) {
+                console.error('Upload error:', e);
+                alert('Upload failed: ' + e.message);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload from local (auto-push)';
+            }
+        });
+    }
+
     btn.addEventListener('click', async () => {
         const path = pathInput ? pathInput.value.trim() : '';
         const caption = captionInput ? captionInput.value.trim() : '';
@@ -558,6 +607,35 @@ function setupTeamModal() {
     });
 
     document.getElementById('member-form').addEventListener('submit', saveMember);
+
+    // Member photo local upload
+    const memberPhotoUpload = document.getElementById('upload-member-photo-btn');
+    const memberPhotoFile = document.getElementById('member-photo-file');
+    const memberPhotoPath = document.getElementById('member-photo');
+    if (memberPhotoUpload && memberPhotoFile && memberPhotoPath) {
+        memberPhotoUpload.addEventListener('click', async () => {
+            const file = memberPhotoFile.files[0];
+            if (!file) { alert('Pick a photo first.'); return; }
+            if (!hasGitHubToken()) { alert('Set your GitHub token in Settings first.'); return; }
+            memberPhotoUpload.disabled = true;
+            memberPhotoUpload.textContent = 'Uploading…';
+            try {
+                const ts = Date.now();
+                const ext = file.name.split('.').pop();
+                const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_').replace(/\.[^.]+$/, '');
+                const repoPath = `assets/images/organisers/${safeName}_${ts}.${ext}`;
+                await uploadToGitHub(file, repoPath);
+                memberPhotoPath.value = repoPath;
+                memberPhotoFile.value = '';
+            } catch (e) {
+                console.error('Member photo upload error:', e);
+                alert('Upload failed: ' + e.message);
+            } finally {
+                memberPhotoUpload.disabled = false;
+                memberPhotoUpload.textContent = 'Upload from local';
+            }
+        });
+    }
 }
 
 async function saveMember(e) {
@@ -672,6 +750,35 @@ function loadSettings() {
     });
 
     document.getElementById('settings-form').addEventListener('submit', saveSettings);
+
+    // QR code local upload
+    const qrUploadBtn = document.getElementById('upload-qr-btn');
+    const qrFileInput = document.getElementById('set-qr-file');
+    const qrPathInput = document.getElementById('set-qr');
+    if (qrUploadBtn && qrFileInput && qrPathInput) {
+        qrUploadBtn.addEventListener('click', async () => {
+            const file = qrFileInput.files[0];
+            if (!file) { alert('Pick a QR image first.'); return; }
+            if (!hasGitHubToken()) { alert('Set your GitHub token in Settings first.'); return; }
+            qrUploadBtn.disabled = true;
+            qrUploadBtn.textContent = 'Uploading…';
+            try {
+                const ext = file.name.split('.').pop();
+                const repoPath = `assets/images/payment/qr.${ext}`;
+                await uploadToGitHub(file, repoPath);
+                qrPathInput.value = repoPath;
+                const preview = document.getElementById('qr-preview');
+                if (preview) { preview.src = repoPath; preview.style.display = 'block'; }
+                qrFileInput.value = '';
+            } catch (e) {
+                console.error('QR upload error:', e);
+                alert('Upload failed: ' + e.message);
+            } finally {
+                qrUploadBtn.disabled = false;
+                qrUploadBtn.textContent = 'Upload from local';
+            }
+        });
+    }
 }
 
 async function saveSettings(e) {
