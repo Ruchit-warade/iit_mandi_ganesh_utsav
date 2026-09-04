@@ -144,13 +144,14 @@ function setupTabs() {
 
 /* ============ CSV EXPORT ============ */
 function exportCSV() {
-    const headers = ['Name', 'Phone', 'Roll', 'Amount (₹)', 'Transaction ID', 'Date', 'Status'];
+    const headers = ['Name', 'Phone', 'Mode', 'Roll', 'Amount (₹)', 'Txn ID / Volunteer', 'Date', 'Status'];
     const rows = allDonations.map(d => [
         d.name || '',
         d.phone || '',
+        d.paymentMode === 'CASH' ? 'Cash' : d.paymentMode === 'UPI' ? 'UPI' : '',
         d.roll || '',
         Number(d.amount) || 0,
-        d.transactionId || '',
+        d.paymentMode === 'CASH' ? (d.volunteerName || '') : (d.transactionId || ''),
         d.createdAt && d.createdAt.seconds
             ? new Date(d.createdAt.seconds * 1000).toLocaleString('en-IN')
             : '',
@@ -342,8 +343,9 @@ function renderContributions() {
             <tr>
                 <td>${escapeHtml(d.name || '—')}</td>
                 <td>${escapeHtml(d.phone || '—')}</td>
+                <td>${escapeHtml(d.paymentMode === 'CASH' ? 'Cash' : d.paymentMode === 'UPI' ? 'UPI' : '—')}</td>
                 <td>₹${(Number(d.amount) || 0).toLocaleString('en-IN')}</td>
-                <td>${escapeHtml(d.transactionId || '—')}</td>
+                <td>${escapeHtml(d.paymentMode === 'CASH' ? (d.volunteerName || '—') : (d.transactionId || '—'))}</td>
                 <td>${date}</td>
                 <td><span class="status-badge ${statusClass}">${statusLabel}</span></td>
                 <td>${actions}</td>

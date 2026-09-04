@@ -197,6 +197,78 @@
     color: var(--gold-light);
 }
 
+/* --- Payment Mode Options --- */
+.mode-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+}
+
+.mode-option {
+    cursor: pointer;
+}
+
+.mode-option input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mode-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    background: rgba(255, 248, 240, 0.05);
+    border: 1px solid var(--dark-border);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all var(--duration-fast) var(--ease-out);
+}
+
+.mode-icon {
+    font-size: var(--text-2xl);
+}
+
+.mode-title {
+    color: var(--cream);
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    letter-spacing: 0.05em;
+}
+
+.mode-desc {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+}
+
+.mode-option input:checked + .mode-card {
+    background: var(--gold-subtle);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px var(--gold);
+}
+
+.mode-option input:focus-visible + .mode-card {
+    border-color: var(--gold);
+}
+
+/* --- Cash Section --- */
+.cash-section {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.cash-note {
+    color: var(--text-secondary);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-md);
+}
+
+.cash-section .form-group {
+    text-align: left;
+}
+
 /* --- Form Actions --- */
 .form-actions {
     margin-top: var(--space-xl);

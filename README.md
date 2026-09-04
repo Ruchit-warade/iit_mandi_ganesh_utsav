@@ -39,7 +39,9 @@ donations/{auto-id}
   phone: string
   roll: string
   amount: number
-  transactionId: string
+  paymentMode: "UPI" | "CASH"
+  transactionId: string   (required when paymentMode = "UPI")
+  volunteerName: string   (required when paymentMode = "CASH")
   createdAt: timestamp
   status: "PENDING" | "VERIFIED" | "REJECTED"
 

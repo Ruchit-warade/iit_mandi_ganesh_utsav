@@ -45,35 +45,51 @@ function initForm() {
         e.preventDefault();
         if (!validateStep1()) return;
 
+        const mode = document.querySelector('input[name="payment-mode"]:checked').value;
+
         // Collect data
         contributionData = {
             name: document.getElementById('input-name').value.trim(),
             phone: document.getElementById('input-phone').value.trim(),
             roll: document.getElementById('input-roll').value.trim(),
             amount: parseInt(document.getElementById('input-amount').value),
+            mode: mode,
         };
 
         // Update summary
         document.getElementById('summary-name').textContent = contributionData.name;
-        document.getElementById('summary-phone').textContent =
-            contributionData.phone;
+        document.getElementById('summary-phone').textContent = contributionData.phone;
+        document.getElementById('summary-mode').textContent = mode === 'UPI' ? 'UPI' : 'Cash';
         document.getElementById('summary-amount').textContent = `₹${contributionData.amount.toLocaleString('en-IN')}`;
 
+        // Show the matching payment section
+        document.getElementById('upi-section').style.display = mode === 'UPI' ? '' : 'none';
+        document.getElementById('cash-section').style.display = mode === 'CASH' ? '' : 'none';
+
         goToStep(2);
-        loadQRCode();
+        if (mode === 'UPI') loadQRCode();
     });
 
     // Step 2 → Step 3 (submit)
     paymentForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const txn = document.getElementById('input-txn').value.trim();
-        if (!txn) {
-            setError('group-txn', true);
-            return;
+        if (contributionData.mode === 'UPI') {
+            const txn = document.getElementById('input-txn').value.trim();
+            if (!txn) {
+                setError('group-txn', true);
+                return;
+            }
+            setError('group-txn', false);
+            submitContribution({ transactionId: txn });
+        } else {
+            const volunteer = document.getElementById('input-volunteer').value.trim();
+            if (!volunteer) {
+                setError('group-volunteer', true);
+                return;
+            }
+            setError('group-volunteer', false);
+            submitContribution({ volunteerName: volunteer });
         }
-        setError('group-txn', false);
-
-        submitContribution(txn);
     });
 
     // Back button
@@ -164,7 +180,7 @@ async function loadQRCode() {
     }
 }
 
-async function submitContribution(transactionId) {
+async function submitContribution(payment) {
     const submitBtn = document.getElementById('submit-btn');
     submitBtn.classList.add('loading');
     submitBtn.textContent = 'Submitting…';
@@ -173,15 +189,23 @@ async function submitContribution(transactionId) {
         const { db } = await import('./firebase-config.js?v=2');
         const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
-        await addDoc(collection(db, 'donations'), {
+        const docData = {
             name: contributionData.name,
             phone: contributionData.phone,
             roll: contributionData.roll || '',
             amount: contributionData.amount,
-            transactionId: transactionId,
+            paymentMode: contributionData.mode,
             createdAt: serverTimestamp(),
             status: 'PENDING',
-        });
+        };
+
+        if (contributionData.mode === 'UPI') {
+            docData.transactionId = payment.transactionId;
+        } else {
+            docData.volunteerName = payment.volunteerName;
+        }
+
+        await addDoc(collection(db, 'donations'), docData);
 
         // Success
         submitBtn.classList.remove('loading');

@@ -81,6 +81,28 @@
                         <div class="error-msg">Please enter a valid amount</div>
                     </div>
 
+                    <div class="form-group" id="group-mode">
+                        <label>Payment Mode</label>
+                        <div class="mode-options">
+                            <label class="mode-option">
+                                <input type="radio" name="payment-mode" value="UPI" checked>
+                                <span class="mode-card">
+                                    <span class="mode-icon">📱</span>
+                                    <span class="mode-title">UPI</span>
+                                    <span class="mode-desc">Pay via QR code</span>
+                                </span>
+                            </label>
+                            <label class="mode-option">
+                                <input type="radio" name="payment-mode" value="CASH">
+                                <span class="mode-card">
+                                    <span class="mode-icon">💵</span>
+                                    <span class="mode-title">Cash</span>
+                                    <span class="mode-desc">Hand over to volunteer</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary btn-large">Next</button>
                     </div>
@@ -90,12 +112,28 @@
             <!-- STEP 2: PAYMENT -->
             <div id="step-2" class="form-step">
                 <form id="payment-form" novalidate>
-                    <div class="qr-section">
+                    <!-- UPI mode -->
+                    <div id="upi-section" class="qr-section">
                         <div class="qr-frame">
                             <img id="qr-code" src="" alt="Scan to pay" style="display:none;">
                             <div id="qr-placeholder" class="qr-placeholder">Loading payment QR code…</div>
                         </div>
                         <p>Scan the QR code above with any UPI app to make your contribution.</p>
+                        <div class="form-group" id="group-txn">
+                            <label for="input-txn">Transaction ID</label>
+                            <input type="text" id="input-txn" placeholder="Enter the UPI transaction ID" required>
+                            <div class="error-msg">Please enter the transaction ID</div>
+                        </div>
+                    </div>
+
+                    <!-- Cash mode -->
+                    <div id="cash-section" class="cash-section" style="display:none;">
+                        <p class="cash-note">Please hand over the cash to a volunteer, then enter their name below to confirm.</p>
+                        <div class="form-group" id="group-volunteer">
+                            <label for="input-volunteer">Volunteer Name</label>
+                            <input type="text" id="input-volunteer" placeholder="Name of the volunteer who collected the cash" required>
+                            <div class="error-msg">Please enter the volunteer's name</div>
+                        </div>
                     </div>
 
                     <div class="contribution-summary">
@@ -108,15 +146,13 @@
                             <span class="value" id="summary-phone">—</span>
                         </div>
                         <div class="summary-row">
+                            <span class="label">Mode</span>
+                            <span class="value" id="summary-mode">—</span>
+                        </div>
+                        <div class="summary-row">
                             <span class="label">Amount</span>
                             <span class="value" id="summary-amount">—</span>
                         </div>
-                    </div>
-
-                    <div class="form-group" id="group-txn">
-                        <label for="input-txn">Transaction ID</label>
-                        <input type="text" id="input-txn" placeholder="Enter the UPI transaction ID" required>
-                        <div class="error-msg">Please enter the transaction ID</div>
                     </div>
 
                     <div class="form-actions">
