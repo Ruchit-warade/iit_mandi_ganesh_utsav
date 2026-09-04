@@ -93,6 +93,12 @@ html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent horizontal scroll on any device. This must be on BOTH html and
+       body — on mobile (esp. iOS Safari) body-only overflow-x isn't always
+       honoured, and translated/positioned elements (e.g. gallery carousel
+       slides) can otherwise push the page wider than the viewport. */
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -101,6 +107,7 @@ body {
     color: var(--text-primary);
     background-color: var(--dark-bg);
     line-height: 1.7;
+    max-width: 100%;
     overflow-x: hidden;
 }
 
