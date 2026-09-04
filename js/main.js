@@ -9,10 +9,11 @@
  * 5. Initialize lightbox
  */
 
-import { initParticles, injectParticleStyles } from './particles.js?v=2';
-import { initScrollAnimations, revealHeroContent } from './scroll.js?v=2';
-import { initLightbox } from './lightbox.js?v=2';
-import { buildBackground } from './bg-builder.js?v=2';
+import { initParticles, injectParticleStyles } from './particles.js?v=3';
+import { initScrollAnimations, revealHeroContent } from './scroll.js?v=3';
+import { initLightbox } from './lightbox.js?v=3';
+import { initCarousel } from './carousel.js?v=3';
+import { buildBackground } from './bg-builder.js?v=3';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Build the background layers
@@ -33,13 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
         initScrollAnimations();
     }, 1000);
 
+    // Initialize gallery carousel (renders local photos first so the lightbox can bind to them)
+    initCarousel();
+
     // Initialize lightbox
     initLightbox();
 
     // Initialize navigation
     initNavigation();
 
-    // Load dynamic content (gallery, team) from Firebase
+    // Load dynamic content (team, and Firebase gallery if a grid exists) from Firebase
     loadDynamicContent();
 });
 

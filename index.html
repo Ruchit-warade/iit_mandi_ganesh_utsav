@@ -20,9 +20,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/main.css?v=2">
-    <link rel="stylesheet" href="css/background.css?v=2">
-    <link rel="stylesheet" href="css/sections.css?v=2">
+    <link rel="stylesheet" href="css/main.css?v=3">
+    <link rel="stylesheet" href="css/background.css?v=3">
+    <link rel="stylesheet" href="css/sections.css?v=3">
 </head>
 <body class="loading">
     <!-- FIXED BACKGROUND -->
@@ -148,12 +148,14 @@
                     <div class="section-intro scroll-reveal">
                         <span class="section-label">Gallery</span>
                         <h2 class="section-title">Moments from<br><span class="text-gold">Ganesh Utsav</span></h2>
-                        <p class="section-text">A glimpse into the devotion and joy of past celebrations.</p>
+                        <p class="section-text">Swipe or watch the moments of past celebrations unfold.</p>
                     </div>
-                    <div class="gallery-grid" id="gallery-grid">
-                        <!-- Populated dynamically from Firebase -->
+                    <div class="gallery-carousel scroll-reveal" id="gallery-carousel">
+                        <div class="carousel-track" id="carousel-track"></div>
+                        <button class="carousel-arrow carousel-prev" id="carousel-prev" aria-label="Previous photo">‹</button>
+                        <button class="carousel-arrow carousel-next" id="carousel-next" aria-label="Next photo">›</button>
+                        <div class="carousel-dots" id="carousel-dots"></div>
                     </div>
-                    <p class="gallery-note scroll-reveal">Photographs from the celebration will appear here.</p>
                 </div>
             </section>
 
@@ -218,6 +220,6 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script type="module" src="js/main.js?v=2"></script>
+    <script type="module" src="js/main.js?v=3"></script>
 </body>
 </html>
