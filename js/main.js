@@ -9,11 +9,11 @@
  * 5. Initialize lightbox
  */
 
-import { initParticles, injectParticleStyles } from './particles.js?v=3';
-import { initScrollAnimations, revealHeroContent } from './scroll.js?v=3';
-import { initLightbox } from './lightbox.js?v=3';
-import { initCarousel } from './carousel.js?v=3';
-import { buildBackground } from './bg-builder.js?v=3';
+import { initParticles, injectParticleStyles } from './particles.js?v=4';
+import { initScrollAnimations, revealHeroContent } from './scroll.js?v=4';
+import { initLightbox } from './lightbox.js?v=4';
+import { initCarousel } from './carousel.js?v=4';
+import { buildBackground } from './bg-builder.js?v=4';
 
 document.addEventListener('DOMContentLoaded', () => {
     // Build the background layers

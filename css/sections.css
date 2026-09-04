@@ -512,6 +512,11 @@
     user-select: none;
     -webkit-user-drag: none;
     pointer-events: none;
+    opacity: 0; /* fade in once the lazy image finishes loading */
+    transition: opacity var(--duration-normal) var(--ease-out);
+}
+.carousel-slide img.loaded {
+    opacity: 1;
 }
 
 .carousel-slide.is-active {

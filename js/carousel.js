@@ -5,15 +5,20 @@
  * visible on either side. Auto-advances every 3s, is swipeable on touch,
  * navigable with the arrow buttons / dots / keyboard, and opens the
  * full-screen lightbox when a slide is clicked.
+ *
+ * Performance: slides use web-optimized images (assets/images/gallery/optimized/)
+ * and are lazy-loaded — only the current slide and its neighbours actually
+ * request their image, so the first load is instant and smooth. Auto-play
+ * only starts once the first image is ready.
  */
 
 const IMAGES = [
-    { src: 'assets/images/gallery/DSC07855.jpg' },
-    { src: 'assets/images/gallery/DSC07886%20(1).JPG' },
-    { src: 'assets/images/gallery/DSC09058.JPG' },
-    { src: 'assets/images/gallery/DSC09168.JPG' },
-    { src: 'assets/images/gallery/IMG-20240912-WA0037.jpg' },
-    { src: 'assets/images/gallery/LEH09807.JPG' },
+    { src: 'assets/images/gallery/optimized/DSC07855.jpg' },
+    { src: 'assets/images/gallery/optimized/DSC07886%20(1).jpg' },
+    { src: 'assets/images/gallery/optimized/DSC09058.jpg' },
+    { src: 'assets/images/gallery/optimized/DSC09168.jpg' },
+    { src: 'assets/images/gallery/optimized/IMG-20240912-WA0037.jpg' },
+    { src: 'assets/images/gallery/optimized/LEH09807.jpg' },
 ];
 
 const AUTO_MS = 3000;
@@ -32,12 +37,12 @@ export function initCarousel() {
     // Respect users who prefer reduced motion: no auto-play, no animation
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Build slides
+    // Build slides (images are deferred via data-src until they come into view)
     const slides = IMAGES.map((img) => {
         const el = document.createElement('div');
         el.className = 'carousel-slide gallery-item';
         el.dataset.caption = img.caption || DEFAULT_CAPTION;
-        el.innerHTML = `<img src="${img.src}" alt="${el.dataset.caption}" draggable="false">`;
+        el.innerHTML = `<img data-src="${img.src}" alt="${el.dataset.caption}" draggable="false">`;
         track.appendChild(el);
         return el;
     });
@@ -55,6 +60,7 @@ export function initCarousel() {
     const n = slides.length;
     let current = 0;
     let timer = null;
+    let autoStarted = false;
 
     function positionOf(i) {
         let pos = i - current;
@@ -64,11 +70,21 @@ export function initCarousel() {
         return pos;
     }
 
+    // Load the actual image for a slide once, fading it in when ready
+    function loadSlide(el) {
+        const img = el.querySelector('img');
+        if (!img || img.src) return;
+        img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+        img.src = img.dataset.src;
+    }
+
     function render() {
         slides.forEach((el, i) => {
             const pos = positionOf(i);
             el.dataset.position = String(pos);
             el.classList.toggle('is-active', pos === 0);
+            // Lazy-load: fetch the active slide and its two neighbours
+            if (Math.abs(pos) <= 1) loadSlide(el);
         });
         dots.forEach((d, i) => d.classList.toggle('is-active', i === current));
     }
@@ -90,6 +106,21 @@ export function initCarousel() {
         if (timer) { clearInterval(timer); timer = null; }
     }
     function restart() { start(); }
+
+    // Begin auto-play only once the first (active) image is ready to avoid jank
+    function startWhenReady() {
+        if (autoStarted || reduceMotion) { start(); return; }
+        const img = slides[current].querySelector('img');
+        if (img.complete && img.naturalWidth > 0) {
+            autoStarted = true;
+            start();
+        } else {
+            img.addEventListener('load', () => {
+                autoStarted = true;
+                start();
+            }, { once: true });
+        }
+    }
 
     // Arrows
     if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
@@ -138,5 +169,5 @@ export function initCarousel() {
     });
 
     render();
-    start();
+    startWhenReady();
 }
