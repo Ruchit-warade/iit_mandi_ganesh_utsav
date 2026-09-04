@@ -144,10 +144,10 @@ function setupTabs() {
 
 /* ============ CSV EXPORT ============ */
 function exportCSV() {
-    const headers = ['Name', 'Category', 'Roll', 'Amount (₹)', 'Transaction ID', 'Date', 'Status'];
+    const headers = ['Name', 'Phone', 'Roll', 'Amount (₹)', 'Transaction ID', 'Date', 'Status'];
     const rows = allDonations.map(d => [
         d.name || '',
-        d.category || '',
+        d.phone || '',
         d.roll || '',
         Number(d.amount) || 0,
         d.transactionId || '',
@@ -226,50 +226,6 @@ function destroyCharts() {
 function renderCharts(donations) {
     if (typeof Chart === 'undefined') return;
     destroyCharts();
-
-    const cats = ['student', 'teacher', 'alumni', 'staff', 'other'];
-    const catLabels = { student: 'Student', teacher: 'Teacher', alumni: 'Alumni', staff: 'Staff', other: 'Other' };
-
-    // Donut: donation count by category
-    charts.category = new Chart(document.getElementById('chart-category'), {
-        type: 'doughnut',
-        data: {
-            labels: cats.map(c => catLabels[c]),
-            datasets: [{
-                data: cats.map(c => donations.filter(d => d.category === c).length),
-                backgroundColor: ['#D4A843', '#FF6B35', '#E8C96A', '#B8922E', '#6b4f1f'],
-                borderWidth: 2,
-                borderColor: '#141420',
-            }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { position: 'bottom', labels: { color: 'rgba(255,248,240,0.65)', padding: 14 } } }
-        }
-    });
-
-    // Bar: amount by category
-    charts.categoryAmount = new Chart(document.getElementById('chart-category-amount'), {
-        type: 'bar',
-        data: {
-            labels: cats.map(c => catLabels[c]),
-            datasets: [{
-                label: 'Amount (₹)',
-                data: cats.map(c => donations.filter(d => d.category === c).reduce((s, d) => s + (Number(d.amount) || 0), 0)),
-                backgroundColor: 'rgba(212,168,67,0.75)',
-                hoverBackgroundColor: '#E8C96A',
-                borderRadius: 6,
-            }]
-        },
-        options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { ticks: { color: 'rgba(255,248,240,0.65)' }, grid: { color: 'rgba(212,168,67,0.08)' } },
-                y: { beginAtZero: true, ticks: { color: 'rgba(255,248,240,0.65)' }, grid: { color: 'rgba(212,168,67,0.08)' } }
-            }
-        }
-    });
 
     // Line: last 14 days
     const today = new Date();
@@ -385,7 +341,7 @@ function renderContributions() {
         return `
             <tr>
                 <td>${escapeHtml(d.name || '—')}</td>
-                <td>${capitalize(d.category || '—')}</td>
+                <td>${escapeHtml(d.phone || '—')}</td>
                 <td>₹${(Number(d.amount) || 0).toLocaleString('en-IN')}</td>
                 <td>${escapeHtml(d.transactionId || '—')}</td>
                 <td>${date}</td>

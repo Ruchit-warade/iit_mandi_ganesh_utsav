@@ -2,7 +2,7 @@
  * Contribution Page Logic
  *
  * 2-step flow:
- *   Step 1: Contributor details (name, category, amount)
+ *   Step 1: Contributor details (name, phone, amount)
  *   Step 2: QR payment + transaction ID
  *   Step 3: Success confirmation
  *
@@ -48,15 +48,15 @@ function initForm() {
         // Collect data
         contributionData = {
             name: document.getElementById('input-name').value.trim(),
-            category: document.getElementById('input-category').value,
+            phone: document.getElementById('input-phone').value.trim(),
             roll: document.getElementById('input-roll').value.trim(),
             amount: parseInt(document.getElementById('input-amount').value),
         };
 
         // Update summary
         document.getElementById('summary-name').textContent = contributionData.name;
-        document.getElementById('summary-category').textContent =
-            capitalize(contributionData.category);
+        document.getElementById('summary-phone').textContent =
+            contributionData.phone;
         document.getElementById('summary-amount').textContent = `₹${contributionData.amount.toLocaleString('en-IN')}`;
 
         goToStep(2);
@@ -93,12 +93,12 @@ function validateStep1() {
         setError('group-name', false);
     }
 
-    const category = document.getElementById('input-category').value;
-    if (!category) {
-        setError('group-category', true);
+    const phone = document.getElementById('input-phone').value.trim();
+    if (!phone || !/^[0-9+\-\s()]{7,15}$/.test(phone)) {
+        setError('group-phone', true);
         valid = false;
     } else {
-        setError('group-category', false);
+        setError('group-phone', false);
     }
 
     const amount = parseInt(document.getElementById('input-amount').value);
@@ -175,7 +175,7 @@ async function submitContribution(transactionId) {
 
         await addDoc(collection(db, 'donations'), {
             name: contributionData.name,
-            category: contributionData.category,
+            phone: contributionData.phone,
             roll: contributionData.roll || '',
             amount: contributionData.amount,
             transactionId: transactionId,

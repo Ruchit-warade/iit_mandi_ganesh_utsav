@@ -36,7 +36,7 @@ background, with a fixed backdrop and scrolling foreground content.
 ```
 donations/{auto-id}
   name: string
-  category: "student" | "teacher" | "alumni" | "staff" | "other"
+  phone: string
   roll: string
   amount: number
   transactionId: string
