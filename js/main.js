@@ -10,7 +10,7 @@
  */
 
 import { initParticles, injectParticleStyles } from './particles.js?v=4';
-import { initScrollAnimations, revealHeroContent } from './scroll.js?v=4';
+import { initScrollAnimations, revealHeroContent } from './scroll.js?v=5';
 import { initLightbox } from './lightbox.js?v=4';
 import { initCarousel } from './carousel.js?v=4';
 import { buildBackground } from './bg-builder.js?v=4';
@@ -100,13 +100,15 @@ function initNavigation() {
 async function loadDynamicContent() {
     try {
         const { db } = await import('./firebase-config.js?v=2');
-        const { collection, getDocs, orderBy, query, serverTimestamp } =
+        const { collection, getDocs, orderBy, query } =
             await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
 
-        // Load gallery
-        await loadGallery(db, collection, getDocs, orderBy, query);
-        // Load team
-        await loadTeam(db, collection, getDocs, orderBy, query);
+        // Load gallery and team in parallel so a slow gallery never blocks the team tab.
+        // Each load handles its own errors and falls back to placeholders independently.
+        await Promise.all([
+            loadGallery(db, collection, getDocs, orderBy, query),
+            loadTeam(db, collection, getDocs, orderBy, query),
+        ]);
 
         // Re-bind lightbox after gallery loads
         initLightbox();
@@ -114,6 +116,10 @@ async function loadDynamicContent() {
         // Firebase not configured — show placeholders
         renderGalleryPlaceholders();
         renderTeamPlaceholders();
+    } finally {
+        // Re-scan for dynamically-added .scroll-reveal elements (team cards,
+        // gallery items) so they get observed and actually become visible.
+        initScrollAnimations();
     }
 }
 
@@ -121,8 +127,15 @@ async function loadGallery(db, collection, getDocs, orderBy, query) {
     const grid = document.getElementById('gallery-grid');
     if (!grid) return;
 
-    const q = query(collection(db, 'gallery'), orderBy('order'));
-    const snapshot = await getDocs(q);
+    let snapshot;
+    try {
+        const q = query(collection(db, 'gallery'), orderBy('order'));
+        snapshot = await getDocs(q);
+    } catch (e) {
+        console.warn('Gallery load failed:', e);
+        renderGalleryPlaceholders();
+        return;
+    }
 
     if (snapshot.empty) {
         renderGalleryPlaceholders();
@@ -154,8 +167,15 @@ async function loadTeam(db, collection, getDocs, orderBy, query) {
     const grid = document.getElementById('team-grid');
     if (!grid) return;
 
-    const q = query(collection(db, 'organisers'), orderBy('order'));
-    const snapshot = await getDocs(q);
+    let snapshot;
+    try {
+        const q = query(collection(db, 'organisers'), orderBy('order'));
+        snapshot = await getDocs(q);
+    } catch (e) {
+        console.warn('Team load failed:', e);
+        renderTeamPlaceholders();
+        return;
+    }
 
     if (snapshot.empty) {
         renderTeamPlaceholders();
